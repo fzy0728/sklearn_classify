@@ -24,8 +24,6 @@ class model:
         self.ridden_vocablist = cvocablist
         traindateset = util.cutlist(dateset, stopword)
 
-        print ','.join(cvocablist)
-        print ','.join(util.cutlist(dateset, stopword)[0])
         trainset = []
         for seq_list in traindateset:
             trainset.append(util.wordtovec(cvocablist, seq_list))
@@ -42,13 +40,11 @@ class model:
 
         cvocablist = []
 
-        for key, value in dic[:100]:
+        for key, value in dic[:125]:
             cvocablist.append(key)
         self.fine_vocablist = cvocablist
         traindateset = cutlist(traindate, stopword)
 
-        print ','.join(cvocablist)
-        print ','.join(cutlist(traindate, stopword)[0])
         trainset = []
         for seq_list in traindateset:
             trainset.append(wordtovec(cvocablist, seq_list))
