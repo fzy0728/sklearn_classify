@@ -1,20 +1,27 @@
-import sys
-import BaseHTTPServer
-from SimpleHTTPServer import SimpleHTTPRequestHandler
+#coding=utf-8
+from flask import Flask, request, make_response, jsonify
+import json
+from train import *
 
-HandlerClass = SimpleHTTPRequestHandler
-ServerClass = BaseHTTPServer.HTTPServer
-Protocol = "HTTP/1.0"
+def classify_backend(sentence):
+    lr = model()
+    lr.getfeature()
+    return lr.parse(sentence.decode("utf-8"))
 
-port = 8024
-import socket
+app = Flask(__name__)
+@app.route('/classify',methods=['GET', 'POST'])
+def classify():
+    try:
+        query = request.args['query']
+        query = query.encode('utf-8')
+    except:
+        return make_response(jsonify({'status': 500, 'info': 'format error'}))
 
-hostname = socket.gethostbyname(socket.gethostname())
-server_address = (hostname, port)
+    try:
+        result = classify_backend(query)
+        return make_response(jsonify({'status': 200, 'query': query, 'result': result}))
+    except:
+        return make_response(jsonify({'status': 500, 'info': 'system error'}))
 
-HandlerClass.protocol_version = Protocol
-httpd = ServerClass(server_address, HandlerClass)
-
-sa = httpd.socket.getsockname()
-print "Serving HTTP on", sa[0], "port", sa[1], "..."
-httpd.serve_forever()
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=28000, threaded=True)
